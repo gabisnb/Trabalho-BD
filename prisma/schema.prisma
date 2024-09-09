@@ -1,0 +1,154 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model administrador {
+  id_usuario String  @id @db.VarChar(100)
+  usuario    usuario @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+  aula       aula[]
+  curso      curso[]
+}
+
+model area {
+  id_area        String  @id @db.VarChar(100)
+  nome_area      String  @db.VarChar(100)
+  descricao_area String?
+  curso          curso[]
+}
+
+model assinatura {
+  id_plano     String    @db.VarChar(100)
+  id_usuario   String    @db.VarChar(100)
+  data_inicio  DateTime  @db.Date
+  valor_mensal Decimal   @db.Decimal(10, 2)
+  data_fim     DateTime? @db.Date
+  plano        plano     @relation(fields: [id_plano], references: [id_plano], onDelete: NoAction, onUpdate: NoAction)
+  estudante    estudante @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([id_plano, id_usuario])
+}
+
+model assiste {
+  id_usuario String    @db.VarChar(100)
+  id_aula    String    @db.VarChar(100)
+  concluida  Boolean
+  aula       aula      @relation(fields: [id_aula], references: [id_aula], onDelete: NoAction, onUpdate: NoAction)
+  estudante  estudante @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([id_usuario, id_aula])
+}
+
+model aula {
+  id_aula       String         @id @db.VarChar(100)
+  nome_aula     String         @db.VarChar(100)
+  resumo_aula   String?
+  professor     String?        @db.VarChar(100)
+  duracao_aula  Int?
+  url_video     String?        @db.VarChar(255)
+  id_curso      String?        @db.VarChar(100)
+  id_usuario    String?        @db.VarChar(100)
+  assiste       assiste[]
+  curso         curso?         @relation(fields: [id_curso], references: [id_curso], onDelete: NoAction, onUpdate: NoAction)
+  administrador administrador? @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+  sugestao      sugestao[]
+}
+
+model certificado {
+  id_certificado   String     @id @db.VarChar(100)
+  data_certificado DateTime   @db.Date
+  id_usuario       String?    @db.VarChar(100)
+  estudante        estudante? @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model correcao {
+  id_correcao        String         @id @db.VarChar(100)
+  descricao_correcao String?
+  resolvido          Boolean
+  imagem_anexo       String?        @db.VarChar(255)
+  erroconteudo       erroconteudo?
+  errointerface      errointerface?
+  errovideo          errovideo?
+  melhoria           melhoria?
+  sugestao           sugestao[]
+}
+
+model curso {
+  id_curso        String         @id @db.VarChar(100)
+  nome_curso      String         @db.VarChar(100)
+  descricao_curso String?
+  id_area         String?        @db.VarChar(100)
+  id_usuario      String?        @db.VarChar(100)
+  aula            aula[]
+  area            area?          @relation(fields: [id_area], references: [id_area], onDelete: NoAction, onUpdate: NoAction)
+  administrador   administrador? @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+  servico         servico[]
+}
+
+model erroconteudo {
+  id_correcao String   @id @db.VarChar(100)
+  correcao    correcao @relation(fields: [id_correcao], references: [id_correcao], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model errointerface {
+  id_correcao String   @id @db.VarChar(100)
+  correcao    correcao @relation(fields: [id_correcao], references: [id_correcao], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model errovideo {
+  id_correcao String   @id @db.VarChar(100)
+  time_stamp  Int
+  correcao    correcao @relation(fields: [id_correcao], references: [id_correcao], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model estudante {
+  id_usuario  String        @id @db.VarChar(100)
+  assinatura  assinatura[]
+  assiste     assiste[]
+  certificado certificado[]
+  usuario     usuario       @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+  sugestao    sugestao[]
+}
+
+model melhoria {
+  id_correcao String   @id @db.VarChar(100)
+  correcao    correcao @relation(fields: [id_correcao], references: [id_correcao], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model plano {
+  id_plano   String       @id @db.VarChar(100)
+  duracao    Int
+  valor      Decimal      @db.Decimal(10, 2)
+  assinatura assinatura[]
+}
+
+model servico {
+  id_servico String  @id @db.VarChar(100)
+  url        String  @db.VarChar(255)
+  id_curso   String? @db.VarChar(100)
+  curso      curso?  @relation(fields: [id_curso], references: [id_curso], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model sugestao {
+  id_correcao String     @db.VarChar(100)
+  id_aula     String     @db.VarChar(100)
+  id_usuario  String?    @db.VarChar(100)
+  aula        aula       @relation(fields: [id_aula], references: [id_aula], onDelete: NoAction, onUpdate: NoAction)
+  correcao    correcao   @relation(fields: [id_correcao], references: [id_correcao], onDelete: NoAction, onUpdate: NoAction)
+  estudante   estudante? @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([id_correcao, id_aula])
+}
+
+model usuario {
+  id_usuario    String         @id @db.VarChar(100)
+  nome_usuario  String         @db.VarChar(100)
+  email         String         @unique @db.VarChar(100)
+  senha         String         @db.VarChar(100)
+  administrador administrador?
+  estudante     estudante?
+}
