@@ -1,22 +1,18 @@
 import { PrismaClient } from '@prisma/client';
-import { userByCredentials, getUserType } from './userPersistence.js';
-import { getActiveAssinaturaByEstudanteId } from './assinaturaPersistence.js';
+import { userByCredentials, getUserType } from './persistence/UserPersistence.js';
+import { getActiveAssinaturaByEstudanteId } from './persistence/AssinaturaPersistence.js';
+import { cursoById, getAllCursos, cursosByAreaId } from './persistence/CursoPersistence.js';
 
 const prisma = new PrismaClient()
 
 async function main() {
-  var userList = undefined;
-  // var userType = undefined;
-  // ... you will write your Prisma Client queries here
-  // const userList = await userById('user2');
-  // const userList = await allUsers();
-  userList = await userByCredentials('maria.oliveira@email.com', 'senha456');
-  // userType = await getUserType(userList);
-  console.log(userList.user);
-  console.log('Tipo: ' + userList.type);
+  var cursoList;
 
-  var assinatura = await getActiveAssinaturaByEstudanteId(userList.user.id_usuario);
-  console.log(assinatura);
+  // cursoList = await getAllCursos();
+  // cursoList = await cursoByAreaId('area_ti');
+  cursoList = await cursoById('curso_java');
+  console.log(cursoList.curso);
+  console.log(cursoList.aulas);
 }
 
 main()
