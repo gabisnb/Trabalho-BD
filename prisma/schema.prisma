@@ -55,13 +55,15 @@ model aula {
   assiste       assiste[]
   curso         curso?         @relation(fields: [id_curso], references: [id_curso], onDelete: NoAction, onUpdate: NoAction)
   administrador administrador? @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
-  sugestao      sugestao[]
+  correcao      correcao[]
 }
 
 model certificado {
   id_certificado   String     @id @db.VarChar(100)
   data_certificado DateTime   @db.Date
   id_usuario       String?    @db.VarChar(100)
+  id_curso         String?    @db.VarChar(100)
+  curso            curso?     @relation(fields: [id_curso], references: [id_curso], onDelete: NoAction, onUpdate: NoAction)
   estudante        estudante? @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
 }
 
@@ -70,11 +72,14 @@ model correcao {
   descricao_correcao String?
   resolvido          Boolean
   imagem_anexo       String?        @db.VarChar(255)
+  id_aula            String?        @db.VarChar(100)
+  id_usuario         String?        @db.VarChar(100)
+  aula               aula?          @relation(fields: [id_aula], references: [id_aula], onDelete: NoAction, onUpdate: NoAction)
+  estudante          estudante?     @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
   erroconteudo       erroconteudo?
   errointerface      errointerface?
   errovideo          errovideo?
   melhoria           melhoria?
-  sugestao           sugestao[]
 }
 
 model curso {
@@ -84,6 +89,7 @@ model curso {
   id_area         String?        @db.VarChar(100)
   id_usuario      String?        @db.VarChar(100)
   aula            aula[]
+  certificado     certificado[]
   area            area?          @relation(fields: [id_area], references: [id_area], onDelete: NoAction, onUpdate: NoAction)
   administrador   administrador? @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
   servico         servico[]
@@ -110,8 +116,8 @@ model estudante {
   assinatura  assinatura[]
   assiste     assiste[]
   certificado certificado[]
+  correcao    correcao[]
   usuario     usuario       @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
-  sugestao    sugestao[]
 }
 
 model melhoria {
@@ -131,17 +137,6 @@ model servico {
   url        String  @db.VarChar(255)
   id_curso   String? @db.VarChar(100)
   curso      curso?  @relation(fields: [id_curso], references: [id_curso], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model sugestao {
-  id_correcao String     @db.VarChar(100)
-  id_aula     String     @db.VarChar(100)
-  id_usuario  String?    @db.VarChar(100)
-  aula        aula       @relation(fields: [id_aula], references: [id_aula], onDelete: NoAction, onUpdate: NoAction)
-  correcao    correcao   @relation(fields: [id_correcao], references: [id_correcao], onDelete: NoAction, onUpdate: NoAction)
-  estudante   estudante? @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
-
-  @@id([id_correcao, id_aula])
 }
 
 model usuario {
