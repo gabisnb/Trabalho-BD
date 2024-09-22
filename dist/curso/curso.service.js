@@ -18,7 +18,11 @@ let CursoService = class CursoService {
     }
     async getAllCurso() {
         try {
-            return this.prismaService.curso.findMany();
+            return await this.prismaService.curso.findMany({
+                include: {
+                    area: true,
+                }
+            });
         }
         catch (e) {
             throw e;

@@ -8,7 +8,7 @@ export class CursoController {
   @Get('')
   async getAllCurso(){
     try{
-      return this.cursoService.getAllCurso();
+      return await this.cursoService.getAllCurso();
     }
     catch(e){
       console.log(e);

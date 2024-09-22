@@ -10,12 +10,17 @@ export class UsuarioService {
     }
 
     async getUser(body: LoginDto){
-      const user = this.prismaService.usuario.findUnique({
-        where: {
-          email: body.email,
-          senha: body.senha,
-        },
-      });
-      return user;
+      try{
+        const user = this.prismaService.usuario.findUnique({
+          where: {
+            email: body.email,
+            senha: body.senha,
+          },
+        });
+        return user;
+      }
+      catch(e){
+        throw e;
+      }
     }
 }
