@@ -28,6 +28,18 @@ let CursoService = class CursoService {
             throw e;
         }
     }
+    async getAulaByCursoId(id) {
+        try {
+            return await this.prismaService.aula.findMany({
+                where: {
+                    id_curso: id
+                }
+            });
+        }
+        catch (e) {
+            throw e;
+        }
+    }
 };
 exports.CursoService = CursoService;
 exports.CursoService = CursoService = __decorate([

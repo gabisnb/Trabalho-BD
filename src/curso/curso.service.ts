@@ -19,4 +19,17 @@ export class CursoService {
             throw e;
         }
     }
+
+    async getAulaByCursoId(id: string){
+        try{
+            return await this.prismaService.aula.findMany({
+                where: {
+                    id_curso: id
+                }
+            });
+        }
+        catch(e){
+            throw e;
+        }
+    }
 }

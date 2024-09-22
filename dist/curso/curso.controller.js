@@ -25,6 +25,15 @@ let CursoController = class CursoController {
             throw e;
         }
     }
+    async getAulaByCursoId(id) {
+        try {
+            return await this.cursoService.getAulaByCursoId(id);
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
 };
 exports.CursoController = CursoController;
 __decorate([
@@ -33,6 +42,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], CursoController.prototype, "getAllCurso", null);
+__decorate([
+    (0, common_1.Get)(':id/aulas'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], CursoController.prototype, "getAulaByCursoId", null);
 exports.CursoController = CursoController = __decorate([
     (0, common_1.Controller)('curso'),
     __metadata("design:paramtypes", [curso_service_1.CursoService])

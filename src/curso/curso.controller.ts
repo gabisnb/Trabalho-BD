@@ -12,6 +12,17 @@ export class CursoController {
     }
     catch(e){
       console.log(e);
+      throw e; 
+    }
+  }
+
+  @Get(':id/aulas')
+  async getAulaByCursoId(id: string){
+    try{
+      return await this.cursoService.getAulaByCursoId(id);
+    }
+    catch(e){
+      console.log(e);
       throw e;
     }
   }
