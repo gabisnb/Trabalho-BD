@@ -5,7 +5,7 @@ import { CursoService } from './curso.service';
 export class CursoController {
   constructor(private readonly cursoService: CursoService) {}
 
-  @Get('/getAll')
+  @Get('')
   async getAllCurso(){
     return this.cursoService.getAllCurso();
   }

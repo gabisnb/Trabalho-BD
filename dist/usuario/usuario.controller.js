@@ -20,12 +20,20 @@ let UsuarioController = class UsuarioController {
         this.usuarioService = usuarioService;
     }
     async getUser(email, senha) {
-        return this.usuarioService.getUser(email, senha);
+        try {
+            return await this.usuarioService.getUser(email, senha);
+        }
+        catch (e) {
+            throw new common_1.HttpException({
+                status: 'userError',
+                message: 'Usuário não encontrado',
+            }, common_1.HttpStatus.NOT_FOUND);
+        }
     }
 };
 exports.UsuarioController = UsuarioController;
 __decorate([
-    (0, common_1.Get)("/getByCredentials"),
+    (0, common_1.Get)("login/:email/:senha"),
     __param(0, (0, common_1.Param)('email')),
     __param(1, (0, common_1.Param)('senha')),
     __metadata("design:type", Function),

@@ -8,11 +8,20 @@ export class UsuarioService {
     }
 
     async getUser(email: string, senha: string){
-        return this.prismaService.usuario.findUnique({
+      try{
+        const user = this.prismaService.usuario.findUnique({
             where: {
               email: email,
               senha: senha
             }
           });
+
+          if(!user)
+            throw new Error("Usuário não encontrado");
+          return user;
+      }
+      catch(e){
+        console.log(e.message);
+      }
     }
 }
