@@ -8,6 +8,11 @@ export class CursoService {
     }
 
     async getAllCurso(){
-        return this.prismaService.curso.findMany();
+        try{
+            return this.prismaService.curso.findMany();
+        }
+        catch(e){
+            throw e;
+        }
     }
 }

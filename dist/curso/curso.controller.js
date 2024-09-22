@@ -17,7 +17,13 @@ let CursoController = class CursoController {
         this.cursoService = cursoService;
     }
     async getAllCurso() {
-        return this.cursoService.getAllCurso();
+        try {
+            return this.cursoService.getAllCurso();
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
     }
 };
 exports.CursoController = CursoController;

@@ -17,7 +17,12 @@ let CursoService = class CursoService {
         this.prismaService = prismaService;
     }
     async getAllCurso() {
-        return this.prismaService.curso.findMany();
+        try {
+            return this.prismaService.curso.findMany();
+        }
+        catch (e) {
+            throw e;
+        }
     }
 };
 exports.CursoService = CursoService;

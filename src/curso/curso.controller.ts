@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus } from '@nestjs/common';
 import { CursoService } from './curso.service';
 
 @Controller('curso')
@@ -7,6 +7,12 @@ export class CursoController {
 
   @Get('')
   async getAllCurso(){
-    return this.cursoService.getAllCurso();
+    try{
+      return this.cursoService.getAllCurso();
+    }
+    catch(e){
+      console.log(e);
+      throw e;
+    }
   }
 }
