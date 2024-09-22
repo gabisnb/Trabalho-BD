@@ -15,29 +15,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsuarioController = void 0;
 const common_1 = require("@nestjs/common");
 const usuario_service_1 = require("./usuario.service");
+const login_dto_1 = require("./dto/login.dto");
 let UsuarioController = class UsuarioController {
     constructor(usuarioService) {
         this.usuarioService = usuarioService;
     }
-    async getUser(email, senha) {
+    async getUser(body) {
         try {
-            return await this.usuarioService.getUser(email, senha);
+            const user = await this.usuarioService.getUser(body);
+            if (!user) {
+                throw new common_1.HttpException('Usuário não encontrado', common_1.HttpStatus.NOT_FOUND);
+            }
+            return user;
         }
         catch (e) {
-            throw new common_1.HttpException({
-                status: 'userError',
-                message: 'Usuário não encontrado',
-            }, common_1.HttpStatus.NOT_FOUND);
+            console.log(e);
+            throw e;
         }
     }
 };
 exports.UsuarioController = UsuarioController;
 __decorate([
-    (0, common_1.Get)("login/:email/:senha"),
-    __param(0, (0, common_1.Param)('email')),
-    __param(1, (0, common_1.Param)('senha')),
+    (0, common_1.Post)("/login"),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [login_dto_1.LoginDto]),
     __metadata("design:returntype", Promise)
 ], UsuarioController.prototype, "getUser", null);
 exports.UsuarioController = UsuarioController = __decorate([

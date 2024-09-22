@@ -16,21 +16,14 @@ let UsuarioService = class UsuarioService {
     constructor(prismaService) {
         this.prismaService = prismaService;
     }
-    async getUser(email, senha) {
-        try {
-            const user = this.prismaService.usuario.findUnique({
-                where: {
-                    email: email,
-                    senha: senha
-                }
-            });
-            if (!user)
-                throw new Error("Usuário não encontrado");
-            return user;
-        }
-        catch (e) {
-            console.log(e.message);
-        }
+    async getUser(body) {
+        const user = this.prismaService.usuario.findUnique({
+            where: {
+                email: body.email,
+                senha: body.senha,
+            },
+        });
+        return user;
     }
 };
 exports.UsuarioService = UsuarioService;

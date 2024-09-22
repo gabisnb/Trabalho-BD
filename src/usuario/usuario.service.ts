@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/database.service';
+import { LoginDto } from './dto/login.dto';
+import { error } from 'console';
 
 @Injectable()
 export class UsuarioService {
@@ -7,21 +9,13 @@ export class UsuarioService {
         
     }
 
-    async getUser(email: string, senha: string){
-      try{
-        const user = this.prismaService.usuario.findUnique({
-            where: {
-              email: email,
-              senha: senha
-            }
-          });
-
-          if(!user)
-            throw new Error("Usuário não encontrado");
-          return user;
-      }
-      catch(e){
-        console.log(e.message);
-      }
+    async getUser(body: LoginDto){
+      const user = this.prismaService.usuario.findUnique({
+        where: {
+          email: body.email,
+          senha: body.senha,
+        },
+      });
+      return user;
     }
 }

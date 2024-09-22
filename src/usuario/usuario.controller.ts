@@ -1,24 +1,25 @@
-import { Controller, Get, HttpException, HttpStatus, Param } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post } from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('usuario')
 export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
 
-  @Get("login/:email/:senha")
-  async getUser(@Param('email') email : string, @Param('senha') senha : string ){
+  @Post("/login")
+  async getUser(@Body() body:LoginDto){
     try{
-      return await this.usuarioService.getUser(email, senha);
+      const user = await this.usuarioService.getUser(body);
+
+      if(!user){
+        throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND);
+      }
+
+      return user;
     }
     catch(e){
-      throw new HttpException(
-        {
-          status: 'userError',
-          message: 'Usuário não encontrado',
-        },
-        HttpStatus.NOT_FOUND,
-      );
+      console.log(e);
+      throw e;
     }
-    // localhost 3000
   }
 }
