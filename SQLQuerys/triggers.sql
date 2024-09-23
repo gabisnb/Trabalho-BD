@@ -1,23 +1,23 @@
 -- 1) Trigger que gera o certificado de um aluno que concluiu um curso
-create or replace function entregar_certificado() returns trigger as
+create or replace function trabalholiviagabilara.entregar_certificado() returns trigger as
 $$
 declare
 	curso varchar(100);
 	concluiu boolean;
 begin
-	select c.id_curso from curso c
-		inner join aula a on (a.id_curso = c.id_curso)
+	select c.id_curso from trabalholiviagabilara.curso c
+		inner join trabalholiviagabilara.aula a on (a.id_curso = c.id_curso)
 		where a.id_aula = new.id_aula into curso;
 		
 	select (v.id_usuario = new.id_usuario and curso = v.id_curso)
-		from cursos_concluidos_por_estudante v
+		from trabalholiviagabilara.cursos_concluidos_por_estudante v
 		where not exists(
-			select from certificado c
+			select from trabalholiviagabilara.certificado c
 				where new.id_usuario = c.id_usuario and curso = c.id_curso
 		) into concluiu;
 		
 	if(concluiu) then
-		insert into certificado values(
+		insert into trabalholiviagabilara.certificado values(
 			concat('cert_', curso, '_', new.id_usuario),
 			current_date,
 			new.id_usuario,
@@ -30,13 +30,13 @@ $$
 language plpgsql;
 
 create trigger gerar_certificados
-	after insert or update on assiste
+	after insert or update on trabalholiviagabilara.assiste
 	for each row
-	execute procedure entregar_certificado();
+	execute procedure trabalholiviagabilara.entregar_certificado();
 
 --2) Trigger que atualiza o valor de assinatura se a mesma for alterada no plano
 
-create or replace function atualiza_assinatura_historico()
+create or replace function trabalholiviagabilara.atualiza_assinatura_historico()
 returns trigger as $$
 declare
     meses_passados int;
@@ -47,13 +47,13 @@ declare
 begin 
     for rec_assinatura in
         select * 
-        from assinatura
+        from trabalholiviagabilara.assinatura
         where id_plano = new.id_plano
     loop
         meses_passados := extract(year from age(current_date, rec_assinatura.data_inicio)) * 12 + extract(month from age(current_date, rec_assinatura.data_inicio));
   
         meses_restantes := extract(year from age(rec_assinatura.data_fim, current_date)) * 12 + extract(month from age(rec_assinatura.data_fim, current_date));
-        update assinatura
+        update trabalholiviagabilara.assinatura
         set data_fim = current_date  
         where id_plano = rec_assinatura.id_plano 
           and id_usuario = rec_assinatura.id_usuario
@@ -68,11 +68,11 @@ begin
         end if;
 
         select coalesce(max(versao), 0) + 1 into nova_versao
-        from assinatura
+        from trabalholiviagabilara.assinatura
         where id_plano = rec_assinatura.id_plano 
           and id_usuario = rec_assinatura.id_usuario;
 
-        insert into assinatura (id_plano, id_usuario, data_inicio, valor_mensal, data_fim, versao)
+        insert into trabalholiviagabilara.assinatura (id_plano, id_usuario, data_inicio, valor_mensal, data_fim, versao)
         values (new.id_plano, rec_assinatura.id_usuario, current_date, valor_mensal, current_date + interval '1 month' * meses_restantes, nova_versao);
     end loop;
 
@@ -81,6 +81,7 @@ end;
 $$ language plpgsql;
 
 create trigger atualiza_assinatura_trigger
-after update on plano
+after update on trabalholiviagabilara.plano
 for each row
-execute function atualiza_assinatura_historico();
+execute function trabalholiviagabilara.atualiza_assinatura_historico();
+
